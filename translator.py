@@ -5,7 +5,7 @@ import time
 import os.path as op
 
 #读取操作时间，时间段为天
-
+#github test
 file_path = '.\\word_list.txt'
 #若已存在则判断是否要写入日期
 if op.exists( file_path ):
