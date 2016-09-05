@@ -28,36 +28,38 @@ while True:
     content = input("请输入要翻译的内容：")
     if content in ['q','Q']:
         break
-    data ={
-    'type':'AUTO',
-    'i':content,
-    'doctype':'json',
-    'xmlVersion':'1.8',
-    'keyfrom':'fanyi.web',
-    'ue':'UTF-8',
-    'action':'FY_BY_CLICKBUTTON',
-    'typoResult':'true'
-    }
+    
+    if len(content):#空内容不翻译
+        data ={
+        'type':'AUTO',
+        'i':content,
+        'doctype':'json',
+        'xmlVersion':'1.8',
+        'keyfrom':'fanyi.web',
+        'ue':'UTF-8',
+        'action':'FY_BY_CLICKBUTTON',
+        'typoResult':'true'
+        }
 
-    try:
-        data = urllib.parse.urlencode(data)#得到的是一个字符串，需要将其转换成二进制形式
-        data = urllib.parse.unquote_to_bytes(data)
-        require = urllib.request.Request(url,data,userAgent)
-        response = urllib.request.urlopen(require)
-        #response = urllib.request.urlopen('http://fanyi.youdao.com/?keyfrom=fanyi.logo')#需要完整的网页地址
-        html = response.read()
-        #print(html) 以二进制码的形式打印
-        html = html.decode("utf-8")#以utf-8形式解码,得到的是一个字符串
-    except:
-        print("请先联网...")
-        wordList.close()
-        continue
-    finally:
-        wordList = open(file_path, 'a')
-        
-    #使用json模块将字符串还原成字典
-    html = json.loads(html)#'translateResult': [[{'tgt': '好好学习', 'src': 'good good study'}]]
-    result = html['translateResult'][0][0]['tgt']#dict->list->list->dict->result
-    print('翻译结果(来自有道)：%s'%result)
-    wordList.write(content+'  '+result+'\n')
+        try:
+            data = urllib.parse.urlencode(data)#得到的是一个字符串，需要将其转换成二进制形式
+            data = urllib.parse.unquote_to_bytes(data)
+            require = urllib.request.Request(url,data,userAgent)
+            response = urllib.request.urlopen(require)
+            #response = urllib.request.urlopen('http://fanyi.youdao.com/?keyfrom=fanyi.logo')#需要完整的网页地址
+            html = response.read()
+            #print(html) 以二进制码的形式打印
+            html = html.decode("utf-8")#以utf-8形式解码,得到的是一个字符串
+        except:
+            print("请先联网...")
+            wordList.close()
+            continue
+        finally:
+            wordList = open(file_path, 'a')
+            
+        #使用json模块将字符串还原成字典
+        html = json.loads(html)#'translateResult': [[{'tgt': '好好学习', 'src': 'good good study'}]]
+        result = html['translateResult'][0][0]['tgt']#dict->list->list->dict->result
+        print('翻译结果(来自有道)：%s'%result)
+        wordList.write(content+'  '+result+'\n')
 wordList.close()
